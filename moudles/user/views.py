@@ -15,7 +15,7 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
             user = serializer.validated_data['user']
             token, created = Token.objects.get_or_create(user=user)
 
-            utc_now = datetime.datetime.utcnow().replace(tzinfo=timezone.utc)
+            utc_now = datetime.datetime.utcnow().replace(tzinfo=None)
             if not created and token.created < utc_now - datetime.timedelta(hours=24):
                 print("re-generate token for old one is expired")
                 token.delete()
