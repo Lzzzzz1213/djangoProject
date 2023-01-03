@@ -37,12 +37,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'moudles.center',
     'rest_framework',
     'rest_framework.authtoken',
-    'moudles.projects',
     'drf_yasg',
     'corsheaders',
+    'moudles.center',
+    'moudles.projects',
+    'moudles.user',
+    'utils',
+
+
 ]
 
 MIDDLEWARE = [
@@ -99,15 +103,53 @@ DATABASES = {
     }
 }
 
+EXPIRE_HOURS = 12
+
 
 # Rest_framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.TokenAuthentication',
         'utils.authentication.ExpiringTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
     ],
+    'DEFAULT_PERMISSION_CLASSES': (
+        # 'rest_framework.permissions.DjangoModelPermissions',
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'SEARCH_PARAM': 's'
 }
+LOGIN_URL = 'rest_framework:login'
+LOGOUT_URL = 'rest_framework:logout'
 
+if "rest_framework.authentication.BasicAuthentication" not in REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"]:
+    SWAGGER_SETTINGS = {
+        'SECURITY_DEFINITIONS': {
+            'api_key': {
+                'type': 'apiKey',
+                'in': 'header',
+                'name': 'Authorization'
+            }
+        },
+        # 'LOGIN_URL': getattr(settings, 'LOGIN_URL', None),
+        # 'LOGOUT_URL': getattr(settings, 'LOGOUT_URL', None),
+        'DOC_EXPANSION': None,
+        'APIS_SORTER': None,
+        'OPERATIONS_SORTER': None,
+        'JSON_EDITOR': False,
+        'SHOW_REQUEST_HEADERS': False,
+        'SUPPORTED_SUBMIT_METHODS': [
+            'get',
+            'post',
+            'put',
+            'delete',
+            'patch'
+        ],
+        # 'VALIDATOR_URL': '',
+    }
 
 
 
@@ -156,3 +198,36 @@ import sys
 import os
 
 sys.path.insert(0, os.path.join(BASE_DIR, 'modules'))
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '\nTime: [%(asctime)s] | Level: [%(levelname)s] | Path: [%(pathname)s] | File_Name: [%(filename)s] | Function: [%(funcName)s] | Line: [%(lineno)d] | Log:\n[%(message)s]',
+        },
+        'simple': {
+            'format': '\nTime: %(asctime)s | Level: %(levelname)s | Log: %(message)s',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+    }
+}
