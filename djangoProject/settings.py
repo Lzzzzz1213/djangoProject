@@ -37,9 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'center',
+    'moudles.center',
     'rest_framework',
-    'projects',
+    'rest_framework.authtoken',
+    'moudles.projects',
     'drf_yasg',
     'corsheaders',
 ]
@@ -96,6 +97,17 @@ DATABASES = {
         },
     }
 }
+
+
+# Rest_framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.TokenAuthentication',
+        'utils.authentication.ExpiringTokenAuthentication',
+    ],
+}
+
+
 
 
 # Password validation

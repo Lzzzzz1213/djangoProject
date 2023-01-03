@@ -1,7 +1,8 @@
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
 from .models import Project
 from rest_framework import viewsets
 from .serializers import ProjectSerializer
-
 
 # class ProjectViewSet(viewsets.ModelViewSet):
 #     """
@@ -17,6 +18,8 @@ from rest_framework import status
 
 
 class ProjectList(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]  # here
+
     # 定义 GET 请求的方法，内部实现相同 @api_view
     def get(self, request):
         projects = Project.objects.all()
@@ -33,6 +36,7 @@ class ProjectList(APIView):
 
 
 class ProjectDetail(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]  # here
 
     def get_object(self, pk):
         try:
