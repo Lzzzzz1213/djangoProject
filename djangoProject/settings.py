@@ -197,7 +197,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 import sys
 import os
 
-sys.path.insert(0, os.path.join(BASE_DIR, 'modules'))
+sys.path.insert(0, os.path.join(BASE_DIR, 'moudles'))
 
 
 LOGGING = {
